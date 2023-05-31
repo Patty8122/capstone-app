@@ -1,0 +1,29 @@
+.TidyUp {
+    /* Tidy up your thoughts */
+
+    /* margin-top: 15%; */
+    margin: 0 auto;
+    
+}
+
+.featuresHead{
+    /* margin-left : 20%;
+    margin-top: 1%; */
+    color: white;
+    /* max-width: 100%; */
+}
+
+.featureImages{
+    padding: 5px 25px 5px 25px;
+   /* width : 120px; */
+   max-width: 100%;
+    /* height: 120px; */
+/* max-height:100%;
+ */
+ height: auto;
+
+}
+
+.fixHeightCard{
+    height: 220px;
+}

@@ -1,0 +1,124 @@
+.h1Custom {
+    /* h1. Heading Title */
+
+
+
+    /* Extrabold / H1 Heading */
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 40px;
+    line-height: 48px;
+    display: flex;
+    align-items: center;
+
+    /* Gray/800 */
+    color: #343A40;
+
+
+    /* Inside auto layout */
+    flex: none;
+    order: 2;
+    flex-grow: 0;
+
+}
+
+.imgCustom {
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    /* align image to the right */
+    /* display: flex;
+    align-items: right;
+    justify-content: right; */
+    /* inline */
+    /* display: inline;
+    right: 60px;
+    top: 60px; */
+
+
+}
+
+
+.imagePosition {
+    /* align image to the right */
+    /* display: flex;
+    align-items: right;
+    justify-content: right; */
+    /* inline */
+    /* display: inline;
+    right: 60px;
+    align-items: right;
+    top: 60px; */
+    position: fixed;
+    margin-left: 40%;
+    margin-top: 0%;
+    width: 50%;
+    /* align-items: right;
+    background-repeat: no-repeat;
+    background-attachment: scroll; */
+
+}
+
+
+.imgContained {
+    max-width: 100%;
+}
+
+/* @media screen and (max-width: 940px) {
+    .imgContained {
+
+    }
+}
+*/
+@media screen and (max-width: 600px) {
+
+    .imgContained {
+        max-width: 100%;
+    }
+} 
+
+
+/* hide image if media screen smaller than 940px */
+@media screen and (max-width: 940px) {
+    .imagePosition {
+        position: fixed;
+        margin-left: 0%;
+        margin-top: 25%;
+    }
+
+
+}
+
+
+@media screen and (max-width: 560px) {
+
+    .imagePosition {
+        display: none;
+    }
+}
+
+.TidyUp {
+    /* Tidy up your thoughts */
+    position: fixed;
+    /* margin-top: 5%;
+    margin-left: 15%; */
+    /* margin: 0 auto; */
+    /* dont occupy the whole width */
+    width: 50%;
+    margin-top: 7.5%;
+    margin-left: 10%;
+
+    /* scroll makes the whole thing scroll*/
+
+    /* width: 427px;
+    height: 60px; */
+    /* right: 136px; */
+    /* top: 187px; */
+}
+
+@media screen and (max-width: 940px) {
+    .TidyUp {
+        position: fixed;
+        width: 100%;
+        align-items: center;
+    }
+}
