@@ -9,8 +9,7 @@ import styles from '../styles/utils.module.css';
 import RootLayout from "./layout";
 import Parent from "../components/checklistParent";
 
-
-function ChecklistPage(){
+const ChecklistPage = (() => {
     const [checklist, setChecklist] = useState([]);
     const [checklist_request, setChecklistRequest] = useState('');
     const [checklist_names, updateTabNames] = useState([]);
@@ -63,7 +62,6 @@ function ChecklistPage(){
         setChecklistRequest(checklist_request);
     }
 
-    
     const deleteTodo = (task) => {
     // const deleteTodo = (task) => {
         console.log(task);
@@ -128,11 +126,7 @@ function ChecklistPage(){
     }
 
 
-
-
-      
     return (
-        deleteTodo,
         <>
         <Nav/>
         <div className="row">
@@ -146,7 +140,7 @@ function ChecklistPage(){
 
                 <div className="container-fluid m-0 p-0">
                     <div className="row p-5 justify-content-left">
-                        {console.log("144",checklist_names)}
+                        {console.log("144",checklist_names)}                            
                         <Parent tabs={checklist_names} deleteTodo={deleteTodo} />
                         
                     {/* {checklist.map((checklist) => {
@@ -201,13 +195,13 @@ function ChecklistPage(){
 
         </>
     );
+
 }
+);
+
 
 
 export default ChecklistPage;
-
-
-
 
 
 // import React from "react";
