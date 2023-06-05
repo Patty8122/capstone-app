@@ -8,32 +8,73 @@ import Features from '../components/landing_page/features';
 import styles from '../styles/utils.module.css';
 import RootLayout from "./layout";
 import Parent from "../components/checklistParent";
+import { useSession, signIn, signOut } from 'next-auth/react';
 
-const ChecklistPage = (() => {
+const ChecklistPage = ((userdata) => {
     const [checklist, setChecklist] = useState([]);
     const [checklist_request, setChecklistRequest] = useState('');
     const [checklist_names, updateTabNames] = useState([]);
-
-
+    const session = useSession();
+    const [user_email, setUserEmail] = useState(null);
+    
+    // setting user email to state variable
+    useEffect(() => {
+        console.log("session: ", session);
+        if (session && session.data && session.data.user && session.data.user.email) {
+            console.log("session.data.user.email: ", session.data.user.email);
+            setUserEmail(session.data.user.email);
+        }
+    }, [session.status==="authenticated"]);
+    
+    
+    // Function to append a new name to the checklist_names state
+    const appendToTabNames = (newName) => {
+        updateTabNames((prevNames) => [...prevNames, newName]);
+    };
+    
+    
+    // Fetch checklist from database using GET request
     React.useEffect(() => {
         fetchChecklist();
-      }, [])
-    
-
+      }, [session.status==="authenticated"]);
 
     const fetchChecklist = async () => {
-        const res = await fetch('/api/checklist');
+        const res = await fetch('/api/checklist',
+        {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+            },
+            query: {
+                email: user_email
+            }                    
+        });
+        console.log("user_email: ", user_email);
         const data = await res.json();
+        console.log("data: ", data);
+        if (data.check_list === undefined) {
+            console.log("checklist is undefined");
+            return;
+        }
         setChecklist(data.check_list);
         console.log(data.check_list);
-        updateTabNames(data.check_list.map((checklist) => {
-            return {
+        // updateTabNames(checklist.map((checklist) => {
+        //     return {
+        //         label: checklist.name,
+        //         icon: "📝",
+        //         tasklist: checklist.tasklist
+        //     }
+        // } 
+        // ));
+        data.check_list.map((checklist) => {
+            console.log("checklist: ", checklist);
+            appendToTabNames( {
                 label: checklist.name,
                 icon: "📝",
                 tasklist: checklist.tasklist
-            }
-        } 
-        ));
+            })
+        }
+        );
         console.log(data.check_list);
         console.log("checklist_names: ", checklist_names);
 
@@ -92,7 +133,8 @@ const ChecklistPage = (() => {
             headers: {
                 'Content-type': 'application/json',
             },
-            body: JSON.stringify({"checklist_request": checklist_request}),
+            body: JSON.stringify({"checklist_request": checklist_request,
+                                    "email": user_email}),
         });
 
 
@@ -113,22 +155,31 @@ const ChecklistPage = (() => {
     // }
     console.log("res: ", res)
         console.log(data);
-        setChecklist(data.check_list);
-        updateTabNames(data.check_list.map((checklist) => {
-            return {
-                label: checklist.name,
+        // setChecklist(data.check_list);
+        // console.log(checklist);
+        // updateTabNames(checklist.map((checklist) => {
+        //     return {
+        //         label: checklist.name,
+        //         icon: "📝",
+        //         tasklist: checklist.tasklist
+        //     }
+        // }
+        // ))
+        // data.check_list.map((checklist) => {
+            appendToTabNames( {
+                label: data.check_list.name,
                 icon: "📝",
-                tasklist: checklist.tasklist
-            }
-        }
-        ))
+                tasklist: data.check_list.tasklist
+            })
+        // }
+        // );
         console.log("checklist_names: ", checklist_names);
     }
 
 
     return (
         <>
-        <Nav/>
+        <Nav />
         <div className="row">
             <div className="col-sm-2 span-all">
                 <RootLayout />

@@ -129,19 +129,18 @@ export default function Home() {
     if (status === 'authenticated') {
         return (
             <div>
-                <Nav data={data} />
+                <Nav data={data}/>
                 <Center />
-                <Features />
-                <h1> hi {data.user.name} </h1>
-                <img src={data.user.image} alt={data.user.name + ' photo'} />
-                <button onClick={signOut}>Sign out</button>
+                <Features userdata={data}/>
             </div>
         );
     }
     return (
 
         <div>
-            <button onClick={() => signIn('google')}>Sign in with Google</button>
+                <Nav />
+                <Center />
+                <Features />
         </div>
     );
 }

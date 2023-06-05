@@ -2,7 +2,7 @@ import React from "react";
 import styles from './features.module.css';
 import Link from 'next/link';
 
-const Features = () => {
+const Features = (userdata) => {
     return (
         <div className="">
 
@@ -49,7 +49,9 @@ const Features = () => {
                                 </div>
                                 {/* <a href="" className="btn btn-primary">Create AI checklists</a> */}
                                 <div className="text-center">
-                                    <Link href="/checklistPage" className="btn btn-primary"> AI checklists </Link>
+                                    <Link className="btn btn-primary"
+                                    href={{ pathname: '/checklistPage', query: userdata}}
+                                    > AI checklists </Link>
                                 </div>
                             </div>
                         </div>
