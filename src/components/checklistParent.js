@@ -23,12 +23,13 @@ const Parent = ({ tabs, deleteTodo }) => {
                             <ul className={styles.tabs}>
                                 {tabs.map((item) => (
                                     <li
-                                        key={item.label}
+                                        key={item.name}
                                         className={item === selectedTab ? `${styles.liSelected} ${styles.liButton}` : styles.liButton}
                                         //   style = {{backgroundColor: item === selectedTab ? "#f5f5f5" : ""}}
                                         onClick={() => setSelectedTab(item)}
                                     >
-                                        {`${item.icon} ${item.label}`}
+                                        {/* {`${item.icon} ${item.name}`} */}
+                                        {`${item.name}`}
                                         {item === selectedTab ? (
                                             <motion.div className={styles.underline} layoutId="underline" />
                                         ) : null}
@@ -42,7 +43,7 @@ const Parent = ({ tabs, deleteTodo }) => {
                             <main className={styles.content}>
                                 <AnimatePresence mode="wait">
                                     <motion.div
-                                        key={selectedTab ? selectedTab.label : "empty"}
+                                        key={selectedTab ? selectedTab.name : "empty"}
                                         initial={{ y: 10, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         exit={{ y: -10, opacity: 0 }}
@@ -50,11 +51,11 @@ const Parent = ({ tabs, deleteTodo }) => {
                                     >
                                         {selectedTab && ([selectedTab]).map((checklist) => {
                                             return (
-                                                <div className="col-12" id={selectedTab.label}>
+                                                <div className="col-12" id={selectedTab.name}>
                                                     <div className="card">
                                                         <div className="card-body">
-                                                            <h5 className="card-title">{selectedTab.label}</h5>
-                                                            <div key={selectedTab.label}>
+                                                            <h5 className="card-title">{selectedTab.name}</h5>
+                                                            <div key={selectedTab.name}>
                                                                 <ul className="list-group list-group-flush text">
                                                                     {
                                                                         Object.keys(checklist.tasklist).map((task) => {

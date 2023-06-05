@@ -7,11 +7,13 @@ import RootLayout from "./layout";
 import Parent from "../components/checklistParent";
 import { useSession} from 'next-auth/react';
 import { connectDB, disconnectDB } from './api/checklist/checklistsModel';
+import { data } from "autoprefixer";
+import { getSession } from "next-auth/react";
 
 
-const ChecklistPage = (() => {
+const ChecklistPage = (({ checklist_names}) => {
     const [checklist_request, setChecklistRequest] = useState('');
-    const [checklist_names, updateTabNames] = useState([]);
+    // const [checklist_names, updateTabNames] = useState([]);
     const session = useSession();
     const [user_email, setUserEmail] = useState(null);
     
@@ -32,41 +34,41 @@ const ChecklistPage = (() => {
     
     
     // Fetch checklist from database using GET request
-    React.useEffect(() => {
-        const interval = setInterval(() => {
-          fetchChecklist();
-        }, 500); // Change the interval time (in milliseconds) to your desired value
+    // React.useEffect(() => {
+    //     const interval = setInterval(() => {
+    //       fetchChecklist();
+    //     }, 500); // Change the interval time (in milliseconds) to your desired value
         
-        return () => {
-          clearInterval(interval); // Clear the interval when the component is unmounted
-        };
-      }, [user_email]);
+    //     return () => {
+    //       clearInterval(interval); // Clear the interval when the component is unmounted
+    //     };
+    //   }, [user_email]);
       
 
-      const fetchChecklist = async () => {
-        try {
-          const res = await fetch('/api/checklist', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              email: user_email
-            }
-          });
-          const data = await res.json();
-          if (data.check_list === undefined) {
-            console.log('checklist is undefined');
-            return;
-          }
-          const updatedChecklist = data.check_list.map(checklist => ({
-            label: checklist.name,
-            icon: '📝',
-            tasklist: checklist.tasklist
-          }));
-          updateTabNames(updatedChecklist);
-        } catch (error) {
-          console.error('Error fetching checklist:', error);
-        }
-      };
+    //   const fetchChecklist = async () => {
+    //     try {
+    //       const res = await fetch('/api/checklist', {
+    //         method: 'GET',
+    //         headers: {
+    //           'Content-Type': 'application/json',
+    //           email: user_email
+    //         }
+    //       });
+    //       const data = await res.json();
+    //       if (data.check_list === undefined) {
+    //         console.log('checklist is undefined');
+    //         return;
+    //       }
+    //       const updatedChecklist = data.check_list.map(checklist => ({
+    //         label: checklist.name,
+    //         icon: '📝',
+    //         tasklist: checklist.tasklist
+    //       }));
+    //       updateTabNames(updatedChecklist);
+    //     } catch (error) {
+    //       console.error('Error fetching checklist:', error);
+    //     }
+    //   };
       
 
     const addChecklist = async (checklist_request) => {
@@ -150,17 +152,72 @@ export default ChecklistPage;
 export async function getServerSideProps(context) {
     // connect to database first before rendering the page or else it will throw an error
     await connectDB();
+    const session = await getSession(context);
+    console.log("LINE 159 session: ", session);
 
-    // disconnect when there is an error
-    context.res.on('close', () => {
-        disconnectDB();
+    // setting user email to state variable if user is logged in
+    let user_email = null;
+    if (session && session.user && session.user.email) {
+        // console.log("session.data.user.email: ", session.data.user.email);
+        user_email = session.user.email;
     }
-    );
-    
-    return {
-        props: {},
-    };
 
+      console.log("LINE 164 user_email: ", user_email);
+
+    // Fetch checklist from database using GET request
+
+        try {
+            const res = await fetch('http://localhost:3000/api/checklist', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    email: user_email
+                }
+            });
+            if (!res.ok) {
+                throw new Error(`Failed to fetch checklist: ${res.status} ${res.statusText}`);
+              }
+          
+            const data = await res.json();
+            console.log("LINE 181 data: ", data);
+            return {
+                props: {
+                    checklist_names: data.check_list || [], // will be passed to the page component as props
+        },
+    };
+    } catch (error) {
+      console.error('Error fetching checklist:', error);
+      
+      return {
+        props: {
+            checklist_names: [], // provide a default value or handle the error condition appropriately
+        },
+    };
+    } finally {
+        // disconnect when there is an error or when the request is completed
+      disconnectDB();
+    }
     
 }
 
+
+//         if (data.check_list === undefined) {
+//             console.log('checklist is undefined');
+//             return;
+//         }
+//     } catch (error) {
+//         console.error('Error fetching checklist:', error);
+//     }
+
+
+// // disconnect when there is an error
+// context.res.on('close', () => {
+//     disconnectDB();
+// }
+// );
+
+// return {
+//     props: {
+//         checklist_names: data.check_list || [], // will be passed to the page component as props
+//     },
+// };
