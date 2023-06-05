@@ -13,7 +13,7 @@ import { getSession } from "next-auth/react";
 
 const ChecklistPage = (({ checklist_names}) => {
     const [checklist_request, setChecklistRequest] = useState('');
-    // const [checklist_names, updateTabNames] = useState([]);
+    // const [checklist_names, updateTabNames] = useState(checklist_names_server);
     const session = useSession();
     const [user_email, setUserEmail] = useState(null);
     
@@ -55,19 +55,12 @@ const ChecklistPage = (({ checklist_names}) => {
     //         }
     //       });
     //       const data = await res.json();
-    //       if (data.check_list === undefined) {
-    //         console.log('checklist is undefined');
-    //         return;
-    //       }
-    //       const updatedChecklist = data.check_list.map(checklist => ({
-    //         label: checklist.name,
-    //         icon: '📝',
-    //         tasklist: checklist.tasklist
-    //       }));
-    //       updateTabNames(updatedChecklist);
     //     } catch (error) {
-    //       console.error('Error fetching checklist:', error);
-    //     }
+    //         console.log(error);
+    //         }
+    //         // update the state of checklist_names
+    //         updateTabNames(data);
+
     //   };
       
 
@@ -112,6 +105,7 @@ const ChecklistPage = (({ checklist_names}) => {
 
         const data = await res.json(); // the added new checklist
         console.log("New checklist added to the database!");
+        // trigger the server to fetch the checklist again
     }
 
 
@@ -149,7 +143,8 @@ const ChecklistPage = (({ checklist_names}) => {
 export default ChecklistPage;
 
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context) {  
+
     // connect to database first before rendering the page or else it will throw an error
     await connectDB();
     const session = await getSession(context);
