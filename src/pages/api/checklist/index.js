@@ -164,17 +164,16 @@ export default async function handler(req, res) {
   // query the database for the checklists with the email
 
   if (req.method === 'GET') {
-    // check if checklist_request is empty
-    if (req.query.email === '') {
-      console.log('email is empty: ', req.query.email)
-      return res.status(404).json({ "req.query.email": req.query.email })
+    // alert('req.query.email: ', req.query.email);
+    if (req.headers.email === '') {
+      return res.status(404).json({ "req.headers.email": req.headers.email })
     }
 
-    const email = req.query.email
+    const email = req.headers.email
     console.log('email: ', email)
 
     // search the database for the email
-    await connectDB();
+    // await connectDB();
 
     try {
       // all documents in the collection YourModel with the email will be returned
@@ -187,7 +186,7 @@ export default async function handler(req, res) {
       res.status(500).json({});
     }
     
-    await disconnectDB();
+    // await disconnectDB();
 
   }
 

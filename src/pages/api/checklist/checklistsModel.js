@@ -8,6 +8,7 @@ const yourSchema = new mongoose.Schema({
 
 const YourModel = mongoose.models.checklists || mongoose.model('checklists', yourSchema);
 
+
 async function connectDB() {
     try {
         await mongoose.connect('mongodb+srv://divyapattisapu:pwd963@cluster0.qcfhkzf.mongodb.net/tempDB?retryWrites=true&w=majority', {
@@ -21,6 +22,7 @@ async function connectDB() {
 }
 
 async function disconnectDB() {
+    
     try {
         await mongoose.disconnect();
         console.log('Disconnected from database');
