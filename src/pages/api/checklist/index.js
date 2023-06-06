@@ -92,6 +92,8 @@ async function insertDocument(doc) {
   }
 
   await disconnectDB();
+
+  // return newDocument._id;
 }
 
 
@@ -128,6 +130,7 @@ export default async function handler(req, res) {
 
     // console.log('cleanedResponse: ', cleanedResponse)
 
+    // const id = 
     await insertDocument({
       "email": body.email,
       "name": cleanedResponse.name,
@@ -136,6 +139,7 @@ export default async function handler(req, res) {
 
 
     console.log("returning 141 ", {
+      // "id": id,
       "email": body.email,
       "name": cleanedResponse.name,
       "tasklist": cleanedResponse.tasklist,
@@ -146,6 +150,7 @@ export default async function handler(req, res) {
       res.status(200).json({
         "message": "Checklist received and processed successfully", 
         "check_list": {
+          // "id": id,
           "email": body.email,
           "name": cleanedResponse.name,
           "tasklist": cleanedResponse.tasklist,
@@ -173,7 +178,7 @@ export default async function handler(req, res) {
     console.log('email: ', email)
 
     // search the database for the email
-    // await connectDB();
+    await connectDB();
 
     try {
       // all documents in the collection YourModel with the email will be returned
@@ -186,7 +191,7 @@ export default async function handler(req, res) {
       res.status(500).json({});
     }
     
-    // await disconnectDB();
+    await disconnectDB();
 
   }
 
