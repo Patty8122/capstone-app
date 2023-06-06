@@ -72,8 +72,38 @@ function cleanResponse(response) {
 
 import { connectDB, disconnectDB, YourModel } from './checklistsModel';
 
-async function insertDocument(doc) {
+// async function insertDocument(doc) {
+//   await connectDB();
+
+//   try {
+//     const newDocument = new YourModel({
+//       email: doc.email,
+//       name: doc.name,
+//       tasklist: doc.tasklist,
+//     });
+
+//     // console.log("85 newDocument", newDocument)
+
+//     await newDocument.save();
+
+//     console.log('Document inserted successfully');
+//   } catch (error) {
+//     console.log('Error inserting document:', error);
+//   }
+
+//   await disconnectDB();
+
+//   // return newDocument._id;
+// }
+
+async function insertDocument(doc, id_parent) {
   await connectDB();
+
+  // if the document has a parent then it is a subtask
+
+  if (false //id_parent === undefined
+    ) {
+    console.log('insertDocument id_parent is EMPTY: ', id_parent)
 
   try {
     const newDocument = new YourModel({
@@ -90,12 +120,28 @@ async function insertDocument(doc) {
   } catch (error) {
     console.log('Error inserting document:', error);
   }
-
-  await disconnectDB();
-
-  // return newDocument._id;
 }
 
+else {
+    try {
+        const newDocument = new YourModel({
+        email: doc.email,
+        name: doc.name,
+        tasklist: doc.tasklist,
+        id_parent: id_parent,
+        });
+    
+        // console.log("85 newDocument", newDocument)
+    
+        await newDocument.save();
+    
+        console.log('137 -------- Document inserted successfully');
+    } catch (error) {
+        console.log('Error inserting document:', error);
+    }
+}
+  await disconnectDB();
+}
 
 
 
@@ -111,6 +157,7 @@ export default async function handler(req, res) {
 
     const body = req.body
     console.log('body: ', body)
+      
 
     // make a call to openai
     let final_request = 'Please make a checklist for ' + body.checklist_request + ' with a timeline in the form of a JSON parsable string of the format keys as \{"name":"title", "tasklist": \{"task": time to complete task\}\}.'
@@ -130,12 +177,25 @@ export default async function handler(req, res) {
 
     // console.log('cleanedResponse: ', cleanedResponse)
 
-    // const id = 
-    await insertDocument({
+    // check if id_parent is empty
+    if (body.id_parent === undefined) {
+      console.log('id_parent is EMPTY: ', body.id_parent)
+      await insertDocument({
       "email": body.email,
-      "name": cleanedResponse.name,
+      // "name": cleanedResponse.name,
+      "name": body.checklist_request,
       "tasklist": cleanedResponse.tasklist,
     });
+    }
+
+    else {
+      await insertDocument({
+        "email": body.email,
+        // "name": cleanedResponse.name,
+        "name": body.checklist_request,
+        "tasklist": cleanedResponse.tasklist,
+      }, body.id_parent);
+    }
 
 
     console.log("returning 141 ", {

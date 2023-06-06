@@ -4,6 +4,7 @@ const yourSchema = new mongoose.Schema({
     email: String,
     name: String,
     tasklist: Object,
+    id_parent: String,
 });
 
 const YourModel = mongoose.models.checklists || mongoose.model('checklists', yourSchema);

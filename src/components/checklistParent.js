@@ -1,16 +1,27 @@
 // import "../styles/utils.module.css";
 import styles from "../styles/checklistParent.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import { initialTabs as tabs } from "./tabList";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChecklistPage } from "../pages/checklistPage";
 
 import { useRef } from 'react';
+import Loading from "./loading";
 
 // 
-const Parent = ({ tabs, deleteTodo }) => {
+const Parent = ({ tabs, deleteTodo, fetchSubtaskList, expandTask }) => {
     console.log("tabs: ", tabs);
     const [selectedTab, setSelectedTab] = useState(tabs[0]);
+    const [selectedTabsubtasks, setSelectedTabsubtasks] = useState([]);
+    console.log("selectedTabsubtasks 1: ", selectedTabsubtasks);
+
+    // useEffect(() => {
+    //     setSelectedTabsubtasks(fetchSubtaskList(selectedTab._id));
+    // }, [selectedTab]);
+
+    useEffect(() => {
+        setSelectedTabsubtasks(fetchSubtaskList(selectedTab._id));
+    }, [tabs]);
 
 
 
@@ -21,21 +32,33 @@ const Parent = ({ tabs, deleteTodo }) => {
                     <div className="col-6">
                         <nav className={styles.nav}>
                             <ul className={styles.tabs}>
-                                {tabs.map((item) => (
-                                    <li
-                                        key={item._id}
-                                        className={item === selectedTab ? `${styles.liSelected} ${styles.liButton}` : styles.liButton}
-                                        //   style = {{backgroundColor: item === selectedTab ? "#f5f5f5" : ""}}
-                                        onClick={() => setSelectedTab(item)}
-                                    >
-                                        {/* {`${item.icon} ${item.name}`} */}
-                                        {`${item.name}`}
-                                        {item === selectedTab ? (
-                                            <motion.div className={styles.underline} layoutId="underline" />
-                                        ) : null}
-                                    </li>
-                                ))}
+                                {tabs.map((item) => {
+                                    if (item.id_parent === undefined) {
+                                        return (
+                                            <li
+                                                key={item._id}
+                                                className={
+                                                    item === selectedTab
+                                                        ? `${styles.liSelected} ${styles.liButton}`
+                                                        : styles.liButton
+                                                }
+                                                onClick={() => {
+                                                    setSelectedTab(item);
+                                                    // setSelectedTabsubtasks(fetchSubtaskList(item._id));
+                                                }
+                                                }
+                                            >
+                                                {/* {`${item.icon} ${item.name}`} */}
+                                                {`${item.name}`}
+                                                {item === selectedTab ? (
+                                                    <motion.div className={styles.underline} layoutId="underline" />
+                                                ) : null}
+                                            </li>
+                                        );
+                                    }
+                                })}
                             </ul>
+
                         </nav>
                     </div>
                     {selectedTab &&
@@ -49,7 +72,13 @@ const Parent = ({ tabs, deleteTodo }) => {
                                         exit={{ y: -10, opacity: 0 }}
                                         transition={{ duration: 0.2 }}
                                     >
-                                        {selectedTab && ([selectedTab]).map((checklist) => {
+                                        {selectedTab && (selectedTab.id_parent === undefined) && ([selectedTab]).map((checklist) => {
+                                            {
+                                                // var childlist = fetchSubtaskList(checklist._id);
+                                                var childlist = null;
+                                                // console.log("childlist: ", childlist);
+
+                                            }
                                             return (
                                                 <div className="col-12" id={selectedTab._id}>
                                                     <div className="card">
@@ -64,8 +93,33 @@ const Parent = ({ tabs, deleteTodo }) => {
                                                                                     <div className="card-block text-left ">
                                                                                         <div className="row justify-content-center p-0 m-0">
                                                                                             <div className="col-8">
-                                                                                                <p className="card-text"
-                                                                                                >{task}</p>
+                                                                                                <div className="card-text">
+                                                                                                    <button className={styles.circle + " " + styles.plus}
+                                                                                                        onClick={() => { expandTask(task, selectedTab._id, selectedTab.email); }}
+                                                                                                    ></button>
+                                                                                                    {/* SUBTASK */}
+
+                                                                                                    <p>{task}</p>
+                                                                                                    {console.log("selectedTabsubtasks 2: ", selectedTabsubtasks)}
+                                                                                                    {console.log("selectedTabsubtasks Length: ", selectedTabsubtasks.length)}
+                                                                                                    {/* {selectedTabsubtasks.length === undefined && selectedTabsubtasks.then((subtasks) => {
+
+                                                                                                        return subtasks.map((subtask) => {
+                                                                                                            if (subtask.name === task) {
+                                                                                                                console.log("subtask: ", subtask);
+                                                                                                                return (
+                                                                                                                    <p>
+                                                                                                                        {subtask.name}
+                                                                                                                    </p>
+                                                                                                                );
+                                                                                                            }
+                                                                                                            return null;
+                                                                                                        });
+                                                                                                    })} */}
+
+                                                                                                </div>
+
+
                                                                                             </div>
                                                                                             <div className="form-group mx-sm-3 mb-2 col-2">
                                                                                                 <form className="form-inline">
@@ -98,7 +152,7 @@ const Parent = ({ tabs, deleteTodo }) => {
                     }
                 </div>
             </div>
-        </div>
+        </div >
     );
 
 }

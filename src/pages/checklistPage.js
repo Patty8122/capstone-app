@@ -125,12 +125,77 @@ const ChecklistPage = (({ checklist_names_ }) => {
         
     }
 
+    const expandTask = async (task, id_parent, user_email) => {
+
+
+        console.log("task: ", task);
+        console.log("id_parent: ", id_parent);
+
+    
+        // updateTabNames(
+        //     checklist_names.map((checklist) => {
+        //         if (checklist.tasklist[task]) {
+        //             delete checklist.tasklist[task];
+        //         }
+        //         return checklist;
+        //     })
+        // );
+        submitChecklistRequest(task, id_parent);
+        
+    }
+
+    const fetchSubtaskList = async (id_parent) => {
+        console.log("id_parent: ", id_parent);
+
+        const data = await fetch('/api/checklist/fetchSubtasks', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify({
+                id_parent: id_parent,
+            }),
+
+        });
+
+        const datajson = await data.json();
+        console.log("datajson.subtasks: ", datajson);
+        return datajson.subtasks
+        }
+
+
+        // return data.subtasks.map((subtask) => (
+        //     <div key={subtask._id}>
+        //         <h3>{subtask.name}</h3>
+        //         {subtask.tasklist.map((task) => (
+        //             <p>{task}</p>
+        //         ))}
+        //     </div>
+        // ));
+
+
+
+
     // adds a new checklist to the database
-    const submitChecklistRequest = async (checklist_request) => {
+    const submitChecklistRequest = async (checklist_request, id_parent) => {
         // Check if checklist_request is empty
         if (checklist_request === '') {
             alert('Please enter a checklist request');
             return;
+        }
+        var request_body;
+        if (id_parent === undefined) {
+            request_body = JSON.stringify({
+                checklist_request: checklist_request,
+                email: user_email,
+            })
+        }
+        else {
+            request_body = JSON.stringify({
+                checklist_request: checklist_request,
+                email: user_email,
+                id_parent: id_parent,
+            })
         }
 
         // Call the API to add the new checklist
@@ -139,10 +204,7 @@ const ChecklistPage = (({ checklist_names_ }) => {
             headers: {
                 'Content-type': 'application/json',
             },
-            body: JSON.stringify({
-                checklist_request: checklist_request,
-                email: user_email,
-            }),
+            body: request_body,
         });
 
         console.log("LINE 114 res: ", res)
@@ -193,7 +255,7 @@ const ChecklistPage = (({ checklist_names_ }) => {
                         <div className="row p-5 justify-content-left">
                             {console.log("144", checklist_names)}
                             {session.status === "authenticated" && checklist_names &&
-                                <Parent tabs={checklist_names} deleteTodo={deleteTodo} user_email={user_email} />}
+                                <Parent tabs={checklist_names} deleteTodo={deleteTodo} user_email={user_email} fetchSubtaskList={fetchSubtaskList} expandTask={expandTask}/>}
 
                         </div>
                     </div>
