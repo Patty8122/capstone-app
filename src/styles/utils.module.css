@@ -247,3 +247,16 @@
   background: white;
   border-radius: 100%;
 }
+
+
+.loading {
+  background: url('/images/spinner.gif') no-repeat center center;
+  top: -39%;
+  left: 5%;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 9999;
+  transform: scale(0.1);
+
+}

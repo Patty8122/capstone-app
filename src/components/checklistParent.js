@@ -13,6 +13,7 @@ const Parent = ({ tabs, deleteTodo, fetchSubtaskList, expandTask }) => {
     console.log("tabs: ", tabs);
     const [selectedTab, setSelectedTab] = useState(tabs[0]);
     const [selectedTabsubtasks, setSelectedTabsubtasks] = useState([]);
+    const [loading, setLoading] = useState(false);
     console.log("selectedTabsubtasks 1: ", selectedTabsubtasks);
 
     // useEffect(() => {
@@ -22,12 +23,15 @@ const Parent = ({ tabs, deleteTodo, fetchSubtaskList, expandTask }) => {
     useEffect(() => {
         // setSelectedTabsubtasks(fetchSubtaskList(selectedTab._id));
         if (selectedTab) {
-        fetchSubtaskList(selectedTab._id).then((res) => {
-            setSelectedTabsubtasks(res);
+            setLoading(true);
+            fetchSubtaskList(selectedTab._id).then((res) => {
+                setSelectedTabsubtasks(res);
+            }).then(() => {
+                setLoading(false);
+            }
+            );
         }
-        );
-        }
-    }, [selectedTab]);
+    }, [selectedTab, tabs]);
 
 
 
@@ -69,6 +73,11 @@ const Parent = ({ tabs, deleteTodo, fetchSubtaskList, expandTask }) => {
 
                         </nav>
                     </div>
+                    <div className={styles.loading}
+                        style={
+                            loading  ? { display: "block" } : { display: "none" }}
+                    ></div>
+
                     {selectedTab &&
                         <div className="col-6">
                             <main className={styles.content}>
@@ -103,7 +112,9 @@ const Parent = ({ tabs, deleteTodo, fetchSubtaskList, expandTask }) => {
                                                                                             <div className="col-8">
                                                                                                 <div className="card-text">
                                                                                                     <button className={styles.circle + " " + styles.plus}
-                                                                                                        onClick={() => { expandTask(task, selectedTab._id, selectedTab.email); }}
+                                                                                                        onClick={() => { expandTask(task, selectedTab._id, selectedTab.email); 
+                                                                                                                            setLoading(true);
+                                                                                                        }}
                                                                                                     ></button>
                                                                                                     {/* SUBTASK */}
 
@@ -112,16 +123,16 @@ const Parent = ({ tabs, deleteTodo, fetchSubtaskList, expandTask }) => {
                                                                                                     {selectedTabsubtasks && selectedTabsubtasks.length > 0 && selectedTabsubtasks.map((subtask) => {
                                                                                                         if (subtask.name === task) {
                                                                                                             return (
-                                                                                                                <p> 
+                                                                                                                <p>
                                                                                                                     {Object.keys(subtask.tasklist).map((key) => {
-                                                                                                                    const subtaskItem = subtask.tasklist[key];
-                                                                                                                    return <p key={key}>{key} - {subtaskItem}</p>;
+                                                                                                                        const subtaskItem = subtask.tasklist[key];
+                                                                                                                        return <p key={key}>{key} - {subtaskItem}</p>;
                                                                                                                     })}
                                                                                                                 </p>
                                                                                                             )
                                                                                                         }
                                                                                                     })}
-                                                                                                    
+
 
 
                                                                                                 </div>

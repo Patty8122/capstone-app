@@ -24,8 +24,7 @@ const ChecklistPage = (({ checklist_names_ }) => {
     const [user_image, setUserImage] = useState(null);
     const [user_name, setUserName] = useState(null);
     const { data, status } = useSession();
-    console.log("data: ", data);
-
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (checklist_names_.length > 0) {
@@ -186,6 +185,7 @@ const ChecklistPage = (({ checklist_names_ }) => {
 
     // adds a new checklist to the database
     const submitChecklistRequest = async (checklist_request, id_parent) => {
+        setLoading(true);
         // Check if checklist_request is empty
         if (checklist_request === '') {
             alert('Please enter a checklist request');
@@ -229,11 +229,13 @@ const ChecklistPage = (({ checklist_names_ }) => {
                         'Content-Type': 'application/json',
                         email: user_email
                     }
-                });
+                })
                 const data = await res.json();
                 // var checklist_names = data.check_list;
                 // update the props of checklist_names
                 updateTabNames(data.check_list);
+                setLoading(false);
+
             } catch (error) {
                 console.log(error);
             }
@@ -249,7 +251,6 @@ const ChecklistPage = (({ checklist_names_ }) => {
 
     return (
         <div className="checklistPage">
-            <div className={styles.loading}></div>
 
             {data && data.user && console.log("data.user: ", data.user.name)}
             {data && data.user &&
@@ -260,6 +261,11 @@ const ChecklistPage = (({ checklist_names_ }) => {
 
             {/* <iframe src="https://giphy.com/embed/3oEjI6SIIHBdRxXI40" width="480" height="480" frameBorder="0" className="giphy-embed" ></iframe> */}
             {/* <iframe src="https://giphy.com/embed/XEJ8bHp1N9i4OjgLwT" width="480" height="270"></iframe> */}
+            <div className={styles.loading}
+                        style={
+                            loading  ? { display: "block" } : { display: "none" }}
+                    ></div>
+
 
             <div className="row">
                 <div className="col-sm-2 span-all">
