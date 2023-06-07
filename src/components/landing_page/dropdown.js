@@ -27,6 +27,17 @@ const Dropdown = ({ userdata , signInOut}) => {
                     className="btn text-white"
                     onClick={toggleDropdown}
                 >
+                    {userdata.data.user.image === null ? (
+                        <img
+                            src="/images/profile.jpg"
+                            style={{ borderRadius: '50%' }}
+                            width="46"
+                            height="46"
+                            alt=""
+                            className="d-inline-block align-middle mr-2"
+                        />
+                    ) : 
+
                     <img
                         src={userdata.data.user.image}
                         style={{ borderRadius: '50%' }}
@@ -35,6 +46,8 @@ const Dropdown = ({ userdata , signInOut}) => {
                         alt=""
                         className="d-inline-block align-middle mr-2"
                     />
+                        
+                    }
                 </button>
                 {isOpen && (
                     <div className={styles.dropdownMenu + ' ' + styles.show}>

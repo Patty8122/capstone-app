@@ -34,13 +34,13 @@ const Nav = (userdata, signInOut) => {
                         <a href="#" className="navbar-brand">
                             <Image src="/images/logo_white.png" width="216" height="46" alt="" className="d-inline-block align-middle mr-2" />
                         </a>
-                        <button className="navbar-toggler" type="button" onClick={() => {
+                        {/* <button className="btn btn-outline-light justify-content-end" type="button" onClick={() => {
                             signInOut();
                         }}>
                             Sign inout
                         
-                        </button>
-                        <Dropdown userdata={userdata}/>
+                        </button> */}
+                            <Dropdown userdata={userdata} />
 
 
                     </div>

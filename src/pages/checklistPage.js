@@ -5,11 +5,12 @@ import Nav from '../components/landing_page/nav';
 import styles from '../styles/utils.module.css';
 import RootLayout from "./layout";
 import Parent from "../components/checklistParent";
-import { useSession } from 'next-auth/react';
+import { useSession, signIn, signOut } from 'next-auth/react';
 import { connectDB, disconnectDB } from './api/checklist/checklistsModel';
 import { data } from "autoprefixer";
 import { getSession } from "next-auth/react";
 import { set } from "mongoose";
+import LoadingAnimation from "../components/loading";
 
 
 
@@ -20,6 +21,11 @@ const ChecklistPage = (({ checklist_names_ }) => {
     const [checklist_names, updateTabNames] = useState(checklist_names_);
     const session = useSession();
     const [user_email, setUserEmail] = useState(null);
+    const [user_image, setUserImage] = useState(null);
+    const [user_name, setUserName] = useState(null);
+    const { data, status } = useSession();
+    console.log("data: ", data);
+
 
     useEffect(() => {
         if (checklist_names_.length > 0) {
@@ -35,6 +41,8 @@ const ChecklistPage = (({ checklist_names_ }) => {
         if (session && session.data && session.data.user && session.data.user.email) {
             // console.log("session.data.user.email: ", session.data.user.email);
             setUserEmail(session.data.user.email);
+            setUserImage(session.data.user.image);
+            setUserName(session.data.user.name);
             // setChecklistRequest(checklist_names_);
             console.log("checklist_names_: ", checklist_names_);
         }
@@ -241,11 +249,23 @@ const ChecklistPage = (({ checklist_names_ }) => {
 
     return (
         <div className="checklistPage">
-            <Nav />
+            <div className={styles.loading}></div>
+
+            {data && data.user && console.log("data.user: ", data.user.name)}
+            {data && data.user &&
+            <Nav data={data}/>}
+
+            {!data  && 
+            <Nav /> }
+
+            {/* <iframe src="https://giphy.com/embed/3oEjI6SIIHBdRxXI40" width="480" height="480" frameBorder="0" className="giphy-embed" ></iframe> */}
+            {/* <iframe src="https://giphy.com/embed/XEJ8bHp1N9i4OjgLwT" width="480" height="270"></iframe> */}
+
             <div className="row">
                 <div className="col-sm-2 span-all">
                     <RootLayout />
                 </div>
+
                 <div className="col-sm-10 span-all">
                     < input type="text" value={checklist_request} className={styles.searchBar} onChange={(e) => addChecklist(e.target.value)} />
                     < button className="pl-0 pr-0 pt-1 pb-1 text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-0 focus:ring-gray-300 font-medium rounded-md text-sm px-3 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 " onClick={() => submitChecklistRequest(checklist_request)}>Add Checklist</button>
@@ -276,7 +296,7 @@ export default ChecklistPage;
 
 export async function getServerSideProps(context) {
     // Connect to the database before rendering the page
-    await connectDB();
+    await connectDB();  
     const session = await getSession(context);
     console.log("LINE 159 session: ", session);
 
