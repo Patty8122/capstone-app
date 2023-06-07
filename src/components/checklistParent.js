@@ -20,8 +20,16 @@ const Parent = ({ tabs, deleteTodo, fetchSubtaskList, expandTask }) => {
     // }, [selectedTab]);
 
     useEffect(() => {
-        setSelectedTabsubtasks(fetchSubtaskList(selectedTab._id));
-    }, [tabs]);
+        // setSelectedTabsubtasks(fetchSubtaskList(selectedTab._id));
+        if (selectedTab) {
+        fetchSubtaskList(selectedTab._id).then((res) => {
+            setSelectedTabsubtasks(res);
+        }
+        );
+        }
+    }, [selectedTab]);
+
+
 
 
 
@@ -101,21 +109,20 @@ const Parent = ({ tabs, deleteTodo, fetchSubtaskList, expandTask }) => {
 
                                                                                                     <p>{task}</p>
                                                                                                     {console.log("selectedTabsubtasks 2: ", selectedTabsubtasks)}
-                                                                                                    {console.log("selectedTabsubtasks Length: ", selectedTabsubtasks.length)}
-                                                                                                    {/* {selectedTabsubtasks.length === undefined && selectedTabsubtasks.then((subtasks) => {
+                                                                                                    {selectedTabsubtasks && selectedTabsubtasks.length > 0 && selectedTabsubtasks.map((subtask) => {
+                                                                                                        if (subtask.name === task) {
+                                                                                                            return (
+                                                                                                                <p> 
+                                                                                                                    {Object.keys(subtask.tasklist).map((key) => {
+                                                                                                                    const subtaskItem = subtask.tasklist[key];
+                                                                                                                    return <p key={key}>{key} - {subtaskItem}</p>;
+                                                                                                                    })}
+                                                                                                                </p>
+                                                                                                            )
+                                                                                                        }
+                                                                                                    })}
+                                                                                                    
 
-                                                                                                        return subtasks.map((subtask) => {
-                                                                                                            if (subtask.name === task) {
-                                                                                                                console.log("subtask: ", subtask);
-                                                                                                                return (
-                                                                                                                    <p>
-                                                                                                                        {subtask.name}
-                                                                                                                    </p>
-                                                                                                                );
-                                                                                                            }
-                                                                                                            return null;
-                                                                                                        });
-                                                                                                    })} */}
 
                                                                                                 </div>
 
